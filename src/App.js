@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Axios from 'axios';
 import Filter from './components/Filter';
 import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '(555) 555-5555' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' },
-  ]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+
+  useEffect(() => {
+    console.log('effect'); // DELETE ME
+    Axios.get('http://localhost:3001/persons').then((response) => {
+      setPersons(response.data);
+    });
+  }, []);
 
   const handleNewName = (event) => {
     console.log(event.target.value); // DELETE ME
@@ -25,14 +28,13 @@ const App = () => {
   };
 
   const handleFilter = (event) => {
-    console.log(event.target.value);
+    console.log(event.target.value); // DELETE ME
     setFilter(event.target.value);
   };
 
   const addPerson = (event) => {
     event.preventDefault();
     if (persons.map((person) => person.name).includes(newName)) {
-      console.log(newNumber);
       alert(`${newName} is already added to phonebook`);
     } else {
       const personObject = {
