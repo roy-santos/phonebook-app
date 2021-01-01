@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Axios from 'axios';
+import phonebookServices from './services/phonebook';
 import Filter from './components/Filter';
 import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
@@ -11,39 +11,56 @@ const App = () => {
   const [filter, setFilter] = useState('');
 
   useEffect(() => {
-    console.log('effect'); // DELETE ME
-    Axios.get('http://localhost:3001/persons').then((response) => {
-      setPersons(response.data);
+    //console.log('effect'); // DELETE ME
+    phonebookServices.getAll().then((initialContacts) => {
+      setPersons(initialContacts);
     });
   }, []);
 
   const handleNewName = (event) => {
-    console.log(event.target.value); // DELETE ME
+    //console.log(event.target.value); // DELETE ME
     setNewName(event.target.value);
   };
 
   const handleNewNumber = (event) => {
-    console.log(event.target.value); // DELETE ME
+    //console.log(event.target.value); // DELETE ME
     setNewNumber(event.target.value);
   };
 
   const handleFilter = (event) => {
-    console.log(event.target.value); // DELETE ME
+    //console.log(event.target.value); // DELETE ME
     setFilter(event.target.value);
   };
 
   const addPerson = (event) => {
     event.preventDefault();
+    const personObject = {
+      name: newName,
+      number: newNumber,
+    };
     if (persons.map((person) => person.name).includes(newName)) {
-      alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already in the phonebook, replace the old number with the new one?`
+        )
+      ) {
+        const person = persons.find((p) => p.name === newName);
+        phonebookServices
+          .update(person.id, personObject)
+          .then((returnedContact) =>
+            setPersons(
+              persons.map((contact) =>
+                contact.id !== person.id ? contact : returnedContact
+              )
+            )
+          );
+      }
     } else {
-      const personObject = {
-        name: newName,
-        number: newNumber,
-      };
-      setPersons(persons.concat(personObject));
-      setNewName('');
-      setNewNumber('');
+      phonebookServices.create(personObject).then((returnedContact) => {
+        setPersons(persons.concat(returnedContact));
+        setNewName('');
+        setNewNumber('');
+      });
     }
   };
 
@@ -60,7 +77,11 @@ const App = () => {
         handleSubmit={addPerson}
       />
       <h3>Contact List</h3>
-      <ContactList filter={filter} contacts={persons} />
+      <ContactList
+        filter={filter}
+        contacts={persons}
+        setContacts={setPersons}
+      />
     </div>
   );
 };
