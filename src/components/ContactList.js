@@ -11,6 +11,10 @@ const ContactList = (props) => {
   const deleteContact = (name, id) => {
     if (window.confirm(`Delete ${name}?`)) {
       phonebookServices.deleteItem(id);
+      props.setMessage(`Deleted ${name}`);
+      setTimeout(() => {
+        props.setMessage(null);
+      }, 5000);
       props.setContacts(props.contacts.filter((contact) => contact.id !== id));
     }
   };

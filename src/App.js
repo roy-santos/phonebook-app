@@ -3,12 +3,14 @@ import phonebookServices from './services/phonebook';
 import Filter from './components/Filter';
 import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
+import Notification from './components/Notification';
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
   const [filter, setFilter] = useState('');
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     //console.log('effect'); // DELETE ME
@@ -47,16 +49,37 @@ const App = () => {
         const person = persons.find((p) => p.name === newName);
         phonebookServices
           .update(person.id, personObject)
-          .then((returnedContact) =>
+          .then((returnedContact) => {
+            setMessage(`Updated ${returnedContact.name}`);
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
             setPersons(
               persons.map((contact) =>
                 contact.id !== person.id ? contact : returnedContact
               )
-            )
-          );
+            );
+            setNewName('');
+            setNewNumber('');
+          })
+          .catch((err) => {
+            setMessage(
+              `Contact info for ${person.name} has already been removed from server`
+            );
+            setTimeout(() => {
+              setMessage(null);
+            }, 5000);
+            setPersons(
+              persons.filter((contact) => contact.name !== person.name)
+            );
+          });
       }
     } else {
       phonebookServices.create(personObject).then((returnedContact) => {
+        setMessage(`Added ${returnedContact.name}`);
+        setTimeout(() => {
+          setMessage(null);
+        }, 5000);
         setPersons(persons.concat(returnedContact));
         setNewName('');
         setNewNumber('');
@@ -67,6 +90,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter filter={filter} handleFilter={handleFilter} />
       <h3>Add New Contact</h3>
       <ContactForm
@@ -81,6 +105,7 @@ const App = () => {
         filter={filter}
         contacts={persons}
         setContacts={setPersons}
+        setMessage={setMessage}
       />
     </div>
   );
