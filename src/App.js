@@ -13,24 +13,20 @@ const App = () => {
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    //console.log('effect'); // DELETE ME
     phonebookServices.getAll().then((initialContacts) => {
       setPersons(initialContacts);
     });
   }, []);
 
   const handleNewName = (event) => {
-    //console.log(event.target.value); // DELETE ME
     setNewName(event.target.value);
   };
 
   const handleNewNumber = (event) => {
-    //console.log(event.target.value); // DELETE ME
     setNewNumber(event.target.value);
   };
 
   const handleFilter = (event) => {
-    //console.log(event.target.value); // DELETE ME
     setFilter(event.target.value);
   };
 
