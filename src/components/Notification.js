@@ -2,9 +2,7 @@ import React from 'react';
 
 const Notification = ({ message }) => {
   const color =
-    message == null ||
-    message.includes('Contact info for') ||
-    message.includes('Deleted')
+    message === null || message.includes('Deleted') || message.includes('Error')
       ? 'red'
       : 'green';
 

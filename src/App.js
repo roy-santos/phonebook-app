@@ -58,28 +58,44 @@ const App = () => {
             setNewName('');
             setNewNumber('');
           })
-          .catch((err) => {
-            setMessage(
-              `Contact info for ${person.name} has already been removed from server`
-            );
-            setTimeout(() => {
-              setMessage(null);
-            }, 5000);
-            setPersons(
-              persons.filter((contact) => contact.name !== person.name)
-            );
+          .catch((error) => {
+            const errorMessage = error.response.data.error;
+            if (errorMessage.includes('number')) {
+              setMessage('Error: Number must contain at least 8 digits');
+            } else {
+              setMessage(
+                `Error: Contact info for ${person.name} has already been removed from server`
+              );
+              setTimeout(() => {
+                setMessage(null);
+              }, 5000);
+              setPersons(
+                persons.filter((contact) => contact.name !== person.name)
+              );
+            }
           });
       }
     } else {
-      phonebookServices.create(personObject).then((returnedContact) => {
-        setMessage(`Added ${returnedContact.name}`);
-        setTimeout(() => {
-          setMessage(null);
-        }, 5000);
-        setPersons(persons.concat(returnedContact));
-        setNewName('');
-        setNewNumber('');
-      });
+      phonebookServices
+        .create(personObject)
+        .then((returnedContact) => {
+          setMessage(`Added ${returnedContact.name}`);
+          setTimeout(() => {
+            setMessage(null);
+          }, 5000);
+          setPersons(persons.concat(returnedContact));
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch((error) => {
+          const errorMessage = error.response.data.error;
+
+          if (errorMessage.includes('name')) {
+            setMessage('Error: Name must contain at least 3 characters');
+          } else {
+            setMessage('Error: Number must contain at least 8 digits');
+          }
+        });
     }
   };
 

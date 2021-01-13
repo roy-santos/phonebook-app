@@ -22,7 +22,7 @@ const ContactList = (props) => {
   return (
     <div>
       {contactsToShow.map((person) => (
-        <div key={person.name}>
+        <div key={person.id}>
           {person.name} : {person.number}{' '}
           <button onClick={() => deleteContact(person.name, person.id)}>
             delete
