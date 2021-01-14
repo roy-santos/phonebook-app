@@ -59,8 +59,7 @@ const App = () => {
             setNewNumber('');
           })
           .catch((error) => {
-            const errorMessage = error.response.data.error;
-            if (errorMessage.includes('number')) {
+            if (error.message.includes('400')) {
               setMessage('Error: Number must contain at least 8 digits');
             } else {
               setMessage(
@@ -88,9 +87,7 @@ const App = () => {
           setNewNumber('');
         })
         .catch((error) => {
-          const errorMessage = error.response.data.error;
-
-          if (errorMessage.includes('name')) {
+          if (error.response.data.error.includes('name')) {
             setMessage('Error: Name must contain at least 3 characters');
           } else {
             setMessage('Error: Number must contain at least 8 digits');
