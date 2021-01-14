@@ -1,27 +1,23 @@
 import React from 'react';
+import { Alert } from '@material-ui/lab';
 
 const Notification = ({ message }) => {
-  const color =
+  const severity =
     message === null || message.includes('Deleted') || message.includes('Error')
-      ? 'red'
-      : 'green';
-
-  const NotificationStyle = {
-    color: color,
-    background: 'lightgrey',
-    fontSize: 20,
-    borderStyle: 'solid',
-    borderWidth: 3,
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 10,
-  };
+      ? 'error'
+      : 'success';
 
   if (message === null) {
     return null;
   }
 
-  return <div style={NotificationStyle}>{message}</div>;
+  return (
+    <div>
+      <Alert severity={severity}>
+        {message}
+      </Alert>
+    </div>
+  )
 };
 
 export default Notification;

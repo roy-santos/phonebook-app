@@ -4,6 +4,8 @@ import Filter from './components/Filter';
 import ContactForm from './components/ContactForm';
 import ContactList from './components/ContactList';
 import Notification from './components/Notification';
+import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography'
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -98,24 +100,32 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <Notification message={message} />
-      <Filter filter={filter} handleFilter={handleFilter} />
-      <h3>Add New Contact</h3>
-      <ContactForm
-        name={newName}
-        handleNewName={handleNewName}
-        number={newNumber}
-        handleNewNumber={handleNewNumber}
-        handleSubmit={addPerson}
-      />
-      <h3>Contact List</h3>
-      <ContactList
-        filter={filter}
-        contacts={persons}
-        setContacts={setPersons}
-        setMessage={setMessage}
-      />
+      <Grid container spacing={2} justify='center' direction='row' alignItems='center'>
+        <Grid item xs={7}>
+          <Typography variant='h3'>
+            Phonebook
+          </Typography>
+          <Notification message={message} />
+        </Grid>
+        <Grid item xs={7}>
+          <Filter filter={filter} handleFilter={handleFilter} />
+          <ContactForm
+            name={newName}
+            handleNewName={handleNewName}
+            number={newNumber}
+            handleNewNumber={handleNewNumber}
+            handleSubmit={addPerson}
+          />
+        </Grid>
+        <Grid item xs={7}>
+          <ContactList
+            filter={filter}
+            contacts={persons}
+            setContacts={setPersons}
+            setMessage={setMessage}
+            />
+        </Grid>
+        </Grid>
     </div>
   );
 };
